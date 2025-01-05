@@ -22,6 +22,7 @@ public class RedisCacheService implements CacheService {
     @Override
     public WeatherAppResponse getFromCache(String key) {
         try {
+            log.debug("RedisCacheService::getFromCache::" + key);
             return redisTemplate.opsForValue().get(key);
         } catch (Exception e) {
             log.error("Exception when trying to get cache = " + e.getMessage());
@@ -33,6 +34,7 @@ public class RedisCacheService implements CacheService {
     @Override
     public void setInCache(String key, WeatherAppResponse value) {
         try {
+            log.debug("RedisCacheService::setInCache::" + key);
             redisTemplate.opsForValue().set(key, value, ttl, TimeUnit.SECONDS);
         } catch (Exception e) {
             log.error("Exception when trying to set cache = " + e.getMessage());

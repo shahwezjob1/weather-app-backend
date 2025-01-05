@@ -57,7 +57,7 @@ public class OpenWeatherController implements WeatherController {
     })
     @GetMapping
     public ResponseEntity<WeatherAppResponse> getWeatherForecast(String city) {
-        log.debug("WeatherController::getWeatherForecast");
+        log.debug("WeatherController::getWeatherForecast::" + city);
         WeatherAppResponse response = weatherService.getWeather(city);
         return ResponseEntity.ok(response);
     }

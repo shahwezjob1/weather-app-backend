@@ -16,7 +16,7 @@ public class OpenWeatherService implements WeatherService {
 
     @Override
     public WeatherAppResponse getWeather(String city) {
-        log.debug("OpenWeatherService::getWeather");
+        log.debug("OpenWeatherService::getWeather::" + city);
         WeatherAppResponse cachedResponse = cacheService.getFromCache(city);
         if (cachedResponse != null) {
             messageService.sendMessage(new WeatherAppMessage(city));

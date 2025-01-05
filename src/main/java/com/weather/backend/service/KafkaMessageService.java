@@ -22,6 +22,7 @@ public class KafkaMessageService implements MessageService {
     @Override
     public void sendMessage(WeatherAppMessage message) {
         try {
+            log.debug("KafkaMessageService::sendMessage::" + message);
             kafkaTemplate.send(topic, message);
         } catch (Exception e) {
             log.error("Exception when trying to send kafka message = " + e.getMessage());

@@ -5,11 +5,13 @@ import com.weather.backend.domain.WeatherAppResponse;
 import com.weather.backend.dto.OpenWeatherApiResponse;
 import com.weather.backend.util.Helper;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class OpenWeatherApiService implements WeatherApiService {
 
     private final OpenWeatherApiConfig config;
@@ -18,6 +20,7 @@ public class OpenWeatherApiService implements WeatherApiService {
     @Override
     public WeatherAppResponse getWeather(String city) {
         String url = config.getUrl() + "?q=" + city + "&appId=" + config.getKey() + "&units=metric";
+        log.debug("OpenWeatherApiService::getWeather::" + city);
         OpenWeatherApiResponse response = restTemplate.getForObject(url, OpenWeatherApiResponse.class);
         return Helper.getAppResponse(response);
     }

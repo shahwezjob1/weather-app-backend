@@ -4,10 +4,10 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 /*
- TODO add logback config such that it keeps creating new log files after fixed intervals of time
- TODO add open telemetry config for dev and prod
  TODO create reactive version
  TODO write test cases
+ TODO write readme md
+ TODO swagger actuator error resolution or simply remove swagger
  */
 
 @SpringBootApplication
