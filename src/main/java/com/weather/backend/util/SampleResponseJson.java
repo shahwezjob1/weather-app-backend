@@ -4,6 +4,7 @@ public class SampleResponseJson {
     private SampleResponseJson() {
 
     }
+
     public static final String SCHEMA_200 = """
             {
                "cod": "200",
@@ -657,7 +658,12 @@ public class SampleResponseJson {
                  "timezone": 19800,
                  "sunrise": 1737334919,
                  "sunset": 1737374215
-               }
+               },
+               "_links": {
+                       "self": {
+                           "href": "http://localhost:8080/weather?city=Ranchi"
+                       }
+                   }
              }
              """;
     public static final String SCHEMA_500 = """
@@ -668,14 +674,41 @@ public class SampleResponseJson {
             """;
     public static final String SCHEMA_404 = """
             {
-                      "cod": 404,
-                      "message": "City not found"
+                "cod": "404",
+                "message": "City Not Found",
+                "data": null,
+                "_links": {
+                    "try-with-city-which-exists": {
+                        "href": "http://localhost:8080/weather?city={city}",
+                        "templated": true
                     }
+                }
+            }
             """;
     public static final String SCHEMA_400 = """
             {
-                      "cod": 400,
-                      "message": "City name must only contain letters and spaces"
+                "cod": "400",
+                "message": "City name must only contain letters and spaces",
+                "data": null,
+                "_links": {
+                    "try-with-valid-city-name": {
+                        "href": "http://localhost:8080/weather?city={city}",
+                        "templated": true
                     }
+                }
+            }
+            """;
+    public static final String SCHEMA_503 = """
+            {
+                 "cod": "503",
+                 "message": "Service is currently unavailable. Please try again later.",
+                 "data": null,
+                 "_links": {
+                     "try-after-some-time": {
+                         "href": "http://localhost:8080/weather?city={city}",
+                         "templated": true
+                     }
+                 }
+            }
             """;
 }

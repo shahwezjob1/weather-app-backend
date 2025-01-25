@@ -4,7 +4,6 @@ import com.weather.backend.advice.GlobalExceptionHandler;
 import com.weather.backend.domain.Data;
 import com.weather.backend.domain.WeatherAppResponse;
 import com.weather.backend.service.WeatherService;
-import jakarta.validation.ConstraintViolationException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;

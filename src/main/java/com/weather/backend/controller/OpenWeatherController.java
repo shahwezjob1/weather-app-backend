@@ -11,9 +11,11 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -23,17 +25,20 @@ import org.springframework.web.bind.annotation.RestController;
 public class OpenWeatherController implements WeatherController {
     private final WeatherService weatherService;
 
-    @Operation(summary = "Get weather details for a city")
+    @Operation(summary = "Get weather forecast details for a city")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successfully retrieved weather data", content = @Content(mediaType = "application/json", schema = @Schema(implementation = WeatherAppResponse.class), examples = @ExampleObject(value = SampleResponseJson.SCHEMA_200))),
             @ApiResponse(responseCode = "404", description = "City not found", content = @Content(mediaType = "application/json", schema = @Schema(implementation = WeatherAppResponse.class), examples = @ExampleObject(value = SampleResponseJson.SCHEMA_404))),
             @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(mediaType = "application/json", schema = @Schema(implementation = WeatherAppResponse.class), examples = @ExampleObject(value = SampleResponseJson.SCHEMA_500))),
+            @ApiResponse(responseCode = "503", description = "Service Unavailable", content = @Content(mediaType = "application/json", schema = @Schema(implementation = WeatherAppResponse.class), examples = @ExampleObject(value = SampleResponseJson.SCHEMA_503))),
             @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content(mediaType = "application/json", schema = @Schema(implementation = WeatherAppResponse.class), examples = @ExampleObject(value = SampleResponseJson.SCHEMA_400)))
     })
     @GetMapping
-    public ResponseEntity<WeatherAppResponse> getWeatherForecast(String city) {
+    public ResponseEntity<WeatherAppResponse> getWeatherForecast(@RequestParam String city) {
         log.debug("WeatherController::getWeatherForecast::" + city);
         WeatherAppResponse response = weatherService.getWeather(city);
+        response.add(WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(OpenWeatherController.class)
+                .getWeatherForecast(city)).withSelfRel());
         return ResponseEntity.ok(response);
     }
 }

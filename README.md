@@ -130,7 +130,7 @@ SMEMBERS RULES
    10. Dev/Prod difference is minimal - All backing services technology are same in dev and prod
    11. Log Aggregation done via Loki and visualized via Grafana
    12. Admin (One off) processes (setup) is part of codebase in readme to ensure same configuration
-3. HATEOAS Principle implemented by sending weather icon complete url in response json. This allows client to dynamically fetch the icon image without having prior knowledge of the icon base url.  
+3. HATEOAS Principle implemented
 4. 1. Performance Optimization achieved by 
       1. Checking Cache before sending request to 3rd party resource
       2. Using Circuit Breaker to avoid overloading 3rd party resource 

@@ -5,7 +5,6 @@ import com.weather.backend.domain.WeatherAppResponse;
 import com.weather.backend.dto.OpenWeatherApiResponse;
 import com.weather.backend.exception.ServiceUnavailableException;
 import com.weather.backend.util.Helper;
-import io.github.resilience4j.circuitbreaker.CallNotPermittedException;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -32,7 +31,7 @@ public class OpenWeatherApiService implements WeatherApiService {
 
     public WeatherAppResponse fallback(String city, Throwable ex) {
         log.error("OpenWeatherApiService::fallback::" + city + "::" + ex.getMessage());
-        throw new ServiceUnavailableException("Service is currently unavailable. Please try again later.");
+        throw new ServiceUnavailableException();
     }
 
     public WeatherAppResponse fallback(String city, HttpClientErrorException.NotFound ex) {
