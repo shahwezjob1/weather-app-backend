@@ -56,7 +56,7 @@ class OpenWeatherControllerTest {
 
     @Test
     void testGetWeatherForecast_CityNotFound() throws Exception {
-        HttpClientErrorException ex = mock(HttpClientErrorException.class);
+        HttpClientErrorException.NotFound ex = mock(HttpClientErrorException.NotFound.class);
         WeatherAppResponse res = new WeatherAppResponse("404", "City Not Found", null);
         when(ex.getResponseBodyAs(WeatherAppResponse.class)).thenReturn(res);
         when(ex.getStatusCode()).thenReturn(HttpStatusCode.valueOf(404));

@@ -131,7 +131,9 @@ SMEMBERS RULES
    11. Log Aggregation done via Loki and visualized via Grafana
    12. Admin (One off) processes (setup) is part of codebase in readme to ensure same configuration
 3. HATEOAS Principle implemented by sending weather icon complete url in response json. This allows client to dynamically fetch the icon image without having prior knowledge of the icon base url.  
-4. 1. Performance Optimization achieved by Checking Cache before sending request to 3rd party resource
+4. 1. Performance Optimization achieved by 
+      1. Checking Cache before sending request to 3rd party resource
+      2. Using Circuit Breaker to avoid overloading 3rd party resource 
    2. Security best practices have been followed like
       1. Not logging any sensitive data
       2. Utilizing Hashicorp Vault to fetch application secrets

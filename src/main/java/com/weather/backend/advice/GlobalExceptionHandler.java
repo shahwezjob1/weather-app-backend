@@ -1,6 +1,7 @@
 package com.weather.backend.advice;
 
 import com.weather.backend.domain.WeatherAppResponse;
+import com.weather.backend.exception.ServiceUnavailableException;
 import io.swagger.v3.oas.annotations.Hidden;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
@@ -10,26 +11,28 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.client.HttpClientErrorException;
 
-import java.util.Arrays;
-
 @RestControllerAdvice
 @Hidden
 @Slf4j
 public class GlobalExceptionHandler {
 
+    @ExceptionHandler(ServiceUnavailableException.class)
+    public ResponseEntity<WeatherAppResponse> handleServiceUnavailableException(ServiceUnavailableException ex) {
+        WeatherAppResponse res = new WeatherAppResponse("503", ex.getMessage(), null);
+        return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(res);
+    }
+
     @ExceptionHandler(ConstraintViolationException.class)
     public ResponseEntity<WeatherAppResponse> handleValidationExceptions(ConstraintViolationException ex) {
         String errorMessage = ex.getConstraintViolations().iterator().next().getMessage();
         WeatherAppResponse res = new WeatherAppResponse("400", errorMessage, null);
-        log.error(Arrays.toString(ex.getStackTrace()));
         return ResponseEntity.badRequest().body(res);
     }
 
-    @ExceptionHandler(HttpClientErrorException.class)
-    public ResponseEntity<WeatherAppResponse> handleHttpClientException(HttpClientErrorException ex) {
-        log.error(Arrays.toString(ex.getStackTrace()));
+    @ExceptionHandler(HttpClientErrorException.NotFound.class)
+    public ResponseEntity<WeatherAppResponse> handleHttpClientException(HttpClientErrorException.NotFound ex) {
         WeatherAppResponse res = ex.getResponseBodyAs(WeatherAppResponse.class);
-        return new ResponseEntity<>(res, ex.getStatusCode());
+        return new ResponseEntity<>(res, HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(Exception.class)
