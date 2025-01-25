@@ -11,12 +11,18 @@ import lombok.*;
 @ToString
 public class Main{
     private Double temp;
-    private Double pressure;
-    private Double humidity;
+    @JsonProperty("feels_like")
+    private Double feelsLike;
     @JsonProperty("temp_min")
     private Double tempMin;
     @JsonProperty("temp_max")
     private Double tempMax;
-    @JsonProperty("feels_like")
-    private Double feelsLike;
+    private Double pressure;
+    @JsonProperty("sea_level")
+    private Double seaLevel;
+    @JsonProperty("grnd_level")
+    private Double grndLevel;
+    private Double humidity;
+    @JsonProperty("temp_kf")
+    private Double tempKf;
 }

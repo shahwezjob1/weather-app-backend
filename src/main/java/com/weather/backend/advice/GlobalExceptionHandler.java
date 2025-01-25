@@ -1,6 +1,7 @@
 package com.weather.backend.advice;
 
-import com.weather.backend.domain.WeatherAppErrorResponse;
+import com.weather.backend.domain.WeatherAppResponse;
+import io.swagger.v3.oas.annotations.Hidden;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -12,27 +13,28 @@ import org.springframework.web.client.HttpClientErrorException;
 import java.util.Arrays;
 
 @RestControllerAdvice
+@Hidden
 @Slf4j
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(ConstraintViolationException.class)
-    public ResponseEntity<WeatherAppErrorResponse> handleValidationExceptions(ConstraintViolationException ex) {
+    public ResponseEntity<WeatherAppResponse> handleValidationExceptions(ConstraintViolationException ex) {
         String errorMessage = ex.getConstraintViolations().iterator().next().getMessage();
-        WeatherAppErrorResponse res = new WeatherAppErrorResponse("400", errorMessage);
+        WeatherAppResponse res = new WeatherAppResponse("400", errorMessage, null);
         log.error(Arrays.toString(ex.getStackTrace()));
         return ResponseEntity.badRequest().body(res);
     }
 
     @ExceptionHandler(HttpClientErrorException.class)
-    public ResponseEntity<WeatherAppErrorResponse> handleHttpClientException(HttpClientErrorException ex) {
+    public ResponseEntity<WeatherAppResponse> handleHttpClientException(HttpClientErrorException ex) {
         log.error(Arrays.toString(ex.getStackTrace()));
-        WeatherAppErrorResponse res = ex.getResponseBodyAs(WeatherAppErrorResponse.class);
+        WeatherAppResponse res = ex.getResponseBodyAs(WeatherAppResponse.class);
         return new ResponseEntity<>(res, ex.getStatusCode());
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<WeatherAppErrorResponse> handleGeneralException(Exception ex) {
-        WeatherAppErrorResponse error = new WeatherAppErrorResponse("500", "Internal Server Error");
+    public ResponseEntity<WeatherAppResponse> handleGeneralException(Exception ex) {
+        WeatherAppResponse error = new WeatherAppResponse("500", "Internal Server Error", null);
         log.error("Error = " + ex.getMessage());
         return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
     }

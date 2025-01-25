@@ -1,5 +1,7 @@
 package com.weather.backend.service;
 
+import com.weather.backend.config.AppProps;
+import com.weather.backend.domain.Weather;
 import com.weather.backend.domain.WeatherAppMessage;
 import com.weather.backend.domain.WeatherAppResponse;
 import lombok.RequiredArgsConstructor;
@@ -13,6 +15,8 @@ public class OpenWeatherService implements WeatherService {
     private final CacheService cacheService;
     private final WeatherApiService weatherApiService;
     private final MessageService messageService;
+    private final AppProps appProps;
+    private final AdviceEvaluatorService adviceEvaluatorService;
 
     @Override
     public WeatherAppResponse getWeather(String city) {
@@ -22,9 +26,13 @@ public class OpenWeatherService implements WeatherService {
             messageService.sendMessage(new WeatherAppMessage(city));
             return cachedResponse;
         }
-        WeatherAppResponse apiResponse = weatherApiService.getWeather(city);
-        cacheService.setInCache(city, apiResponse);
+        WeatherAppResponse appResponse = weatherApiService.getWeather(city);
+        for (Weather weather : appResponse.getData().getList()) {
+            weather.setIcon(appProps.getIconUrl() + weather.getIcon() + "@2x.png");
+            weather.setAdvice(adviceEvaluatorService.getAdvice(weather));
+        }
+        cacheService.setInCache(city, appResponse);
         messageService.sendMessage(new WeatherAppMessage(city));
-        return apiResponse;
+        return appResponse;
     }
 }

@@ -1,6 +1,6 @@
 package com.weather.backend.service;
 
-import com.weather.backend.config.OpenWeatherApiConfig;
+import com.weather.backend.config.OpenWeatherApiProps;
 import com.weather.backend.domain.WeatherAppResponse;
 import com.weather.backend.dto.OpenWeatherApiResponse;
 import com.weather.backend.util.Helper;
@@ -14,12 +14,12 @@ import org.springframework.web.client.RestTemplate;
 @Slf4j
 public class OpenWeatherApiService implements WeatherApiService {
 
-    private final OpenWeatherApiConfig config;
+    private final OpenWeatherApiProps apiProps;
     private final RestTemplate restTemplate;
 
     @Override
     public WeatherAppResponse getWeather(String city) {
-        String url = config.getUrl() + "?q=" + city + "&appId=" + config.getKey() + "&units=metric";
+        String url = apiProps.getUrl() + "?q=" + city + "&appId=" + apiProps.getKey() + "&units=metric";
         log.debug("OpenWeatherApiService::getWeather::" + city);
         OpenWeatherApiResponse response = restTemplate.getForObject(url, OpenWeatherApiResponse.class);
         return Helper.getAppResponse(response);

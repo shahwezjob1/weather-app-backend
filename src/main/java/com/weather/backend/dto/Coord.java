@@ -9,6 +9,6 @@ import lombok.*;
 @EqualsAndHashCode
 @ToString
 public class Coord{
-    private Double lon;
     private Double lat;
+    private Double lon;
 }

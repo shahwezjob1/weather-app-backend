@@ -10,4 +10,6 @@ import lombok.*;
 @ToString
 public class Wind{
     private Double speed;
+    private Integer deg;
+    private Double gust;
 }
