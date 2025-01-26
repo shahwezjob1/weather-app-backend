@@ -35,15 +35,15 @@ class KafkaMessageServiceTest {
     void testSendMessage_Successful() {
         WeatherAppMessage message = new WeatherAppMessage("London");
         kafkaMessageService.sendMessage(message);
-        verify(kafkaTemplate, times(1)).send(TOPIC, message);
+        verify(kafkaTemplate, times(1)).send(TOPIC, message.getCity(), message);
     }
 
     @Test
     void testSendMessage_ExceptionHandling() {
         WeatherAppMessage message = new WeatherAppMessage("London");
-        doThrow(new RuntimeException("Kafka error")).when(kafkaTemplate).send(TOPIC, message);
+        doThrow(new RuntimeException("Kafka error")).when(kafkaTemplate).send(TOPIC, message.getCity(), message);
         assertDoesNotThrow(() -> kafkaMessageService.sendMessage(message));
-        verify(kafkaTemplate, times(1)).send(TOPIC, message);
+        verify(kafkaTemplate, times(1)).send(TOPIC, message.getCity(), message);
     }
 }
 

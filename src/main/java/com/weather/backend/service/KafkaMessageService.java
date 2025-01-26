@@ -22,7 +22,7 @@ public class KafkaMessageService implements MessageService {
     public void sendMessage(WeatherAppMessage message) {
         try {
             log.debug("KafkaMessageService::sendMessage::" + message);
-            kafkaTemplate.send(props.getKafkaTopic(), message);
+            kafkaTemplate.send(props.getKafkaTopic(), message.getCity(), message);
         } catch (Exception e) {
             log.error("Exception when trying to send kafka message = " + e.getMessage());
             log.error(Arrays.toString(e.getStackTrace()));
