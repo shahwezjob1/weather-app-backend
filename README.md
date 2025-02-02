@@ -19,6 +19,12 @@
 `sudo systemctl start docker`
 `sudo usermod -a -G docker ec2-user`
 `sudo chmod 666 /var/run/docker.sock`
+```
+sudo wget http://repos.fedorapeople.org/repos/dchen/apache-maven/epel-apache-maven.repo -O /etc/yum.repos.d/epel-apache-maven.repo
+sudo sed -i s/\$releasever/6/g /etc/yum.repos.d/epel-apache-maven.repo
+sudo yum install -y apache-maven
+mvn --version
+```
 
 ## Kafka
 
