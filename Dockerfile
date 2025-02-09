@@ -14,4 +14,4 @@ COPY ./target/${JAR_FILE} app.jar
 EXPOSE 8080
 
 # Run the JAR file when the container starts
-ENTRYPOINT ["java", "-javaagent:/app/opentelemetry-javaagent.jar", "-jar", "/app/app.jar"]
+ENTRYPOINT ["java", "-jar", "/app/app.jar"]
