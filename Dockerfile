@@ -5,7 +5,7 @@ FROM amazoncorretto:17
 WORKDIR /app
 
 # Copy the javaagent JAR file into the container
-COPY ./opentelemetry-javaagent-2.12.0.jar opentelemetry-javaagent-2.12.0.jar
+COPY ./opentelemetry-javaagent-2.12.0.jar opentelemetry-javaagent.jar
 
 # Copy the packaged JAR file from the target folder into the container
 COPY ./target/${JAR_FILE} app.jar
