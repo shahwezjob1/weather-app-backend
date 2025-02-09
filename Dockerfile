@@ -1,11 +1,11 @@
 # Use an official OpenJDK runtime as a parent image
-FROM openjdk:17-jdk-slim
+FROM amazoncorretto:17
 
 # Set the working directory inside the container
 WORKDIR /app
 
-# Accept JAR_FILE as a build argument
-ARG JAR_FILE
+# Copy the javaagent JAR file into the container
+COPY /home/ec2-user/opentelemetry-javaagent/opentelemetry-javaagent-2.12.0.jar /app/opentelemetry-javaagent-2.12.0.jar
 
 # Copy the packaged JAR file from the target folder into the container
 COPY ./target/${JAR_FILE} app.jar
@@ -14,4 +14,4 @@ COPY ./target/${JAR_FILE} app.jar
 EXPOSE 8080
 
 # Run the JAR file when the container starts
-ENTRYPOINT ["java", "-jar", "/app/app.jar"]
+ENTRYPOINT ["java", "-javaagent:/app/opentelemetry-javaagent.jar", "-jar", "/app/app.jar"]
