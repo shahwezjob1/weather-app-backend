@@ -1,0 +1,87 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: weather-app-backend
+  labels:
+    app: weather-app-backend
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: weather-app-backend
+  template:
+    metadata:
+      labels:
+        app: weather-app-backend
+    spec:
+      initContainers:
+      - name: update-truststore
+        image: openjdk:17-jdk-slim
+        command: [ 'sh', '-c', 'keytool -importcert -file /etc/certs/vault-cert.der -alias vault-cert -keystore $JAVA_HOME/lib/security/cacerts -storepass changeit -noprompt' ]
+        volumeMounts:
+        - name: vault-cert-der
+          mountPath: /etc/certs
+      containers:
+      - name: weather-app-backend
+        image: public.ecr.aws/s1u2f4x4/weather/predictor:backend-0.0.1-SNAPSHOT
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8080
+        env:
+        - name: VAULT_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: weather-app-secrets
+              key: vault-token
+        - name: TRUST_STORE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: weather-app-secrets
+              key: trust-store-password
+        - name: LOKI_URL
+          value: "http://172.31.82.154:3100/loki/api/v1/push"
+        - name: VAULT_URI
+          value: "https://172.31.82.154:8200"
+        - name: REDIS_HOST
+          value: "172.31.82.154"
+        - name: KAFKA_SERVER
+          value: "172.31.82.154:9092"
+        - name: TRUST_STORE
+          value: "/etc/ssl/certs/vault-keystore.jks"
+        volumeMounts:
+        - name: vault-cert-der
+          mountPath: /etc/certs
+          readOnly: true
+        - name: vault-ssl
+          mountPath: /etc/ssl/certs
+          readOnly: true
+        command: ["java"]
+        args: [
+          "-Dotel.service.name=weather-app-backend",
+          "-Dotel.logs.exporter=none",
+          "-Dotel.metrics.exporter=none",
+          "-Dotel.traces.exporter=otlp",
+          "-Dotel.exporter.otlp.endpoint=http://44.201.193.112:4318",
+          "-Djavax.net.ssl.trustStore=$JAVA_HOME/lib/security/cacerts",
+          "-Djavax.net.ssl.trustStorePassword=changeit",
+          "-jar", "/app/app.jar"
+        ]
+      volumes:
+      - name: vault-cert-der
+        secret:
+          secretName: vault-cert-der
+      - name: vault-ssl
+        secret:
+          secretName: vault-ssl-certs
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: weather-app-backend
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 8080
+    targetPort: 8080
+  selector:
+    app: weather-app-backend
