@@ -1,5 +1,23 @@
 # Setup
 
+## Kubernates
+```
+kubectl create secret generic vault-ssl-certs --from-file=vault-keystore.jks=vault-keystore.jks
+kubectl create secret generic vault-cert-der --from-file=vault-cert.der=vault-cert.der
+kubectl create secret generic weather-app-secrets --from-literal=vault-token=hvs.UPIgMiXT8hew3EgYwhvjBR1K --from-literal=trust-store-password=pass1234
+
+kubectl get secrets
+
+curl -O https://s3.us-west-2.amazonaws.com/amazon-eks/1.32.0/2024-12-20/bin/linux/amd64/kubectl
+chmod +x ./kubectl
+sudo mv kubectl /usr/bin/
+kubectl version --client
+curl --silent --location "https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_$(uname -s)_amd64.tar.gz" | tar xz -C ~
+sudo mv ~/eksctl /usr/local/bin
+
+eksctl create cluster --name new-weather-app-backend-cluster --region us-east-1 --node-type t2.micro --nodes-min 1 --nodes-max 2 --vpc-private-subnets subnet-04e66f0a9dbee8a9d,subnet-058d76da62babfda1 --vpc-public-subnets subnet-04e66f0a9dbee8a9d,subnet-058d76da62babfda1
+```
+
 ## Jenkins
 
 ```shell
@@ -20,9 +38,15 @@ sudo systemctl enable docker
 sudo systemctl start docker
 sudo usermod -a -G docker ec2-user
 sudo chmod 666 /var/run/docker.sock
-sudo wget http://repos.fedorapeople.org/repos/dchen/apache-maven/epel-apache-maven.repo -O /etc/yum.repos.d/epel-apache-maven.repo
-sudo sed -i s/\$releasever/6/g /etc/yum.repos.d/epel-apache-maven.repo
-sudo yum install -y apache-maven
+wget https://dlcdn.apache.org/maven/maven-3/3.9.9/binaries/apache-maven-3.9.9-bin.tar.gz
+sudo tar -zxvf apache-maven-3.9.9-bin.tar.gz
+sudo mv apache-maven-3.9.9 /opt/maven
+sudo chmod -R +r /opt/maven
+sudo vi ~/.bashrc
+#export M2_HOME=/opt/maven
+#export MAVEN_HOME=/opt/maven
+#export PATH=${M2_HOME}/bin:${PATH}
+source ~/.bashrc
 mvn --version
 ```
 
@@ -135,6 +159,11 @@ redis-stable/src/redis-cli -a pass1234
 
 ## Prometheus
 
+```
+wget https://github.com/prometheus/prometheus/releases/download/v2.53.3/prometheus-2.53.3.linux-amd64.tar.gz
+tar -xvf prometheus-*.linux-amd64.tar.gz
+```
+
 Update `prometheus.yml` file and add below job in scrape config
 
 ```yaml
@@ -169,10 +198,11 @@ wget https://raw.githubusercontent.com/grafana/loki/main/cmd/loki/loki-local-con
 ````
 
 
-Run loki like below  
-````powershell
+Run loki like below
+````shell
 .\loki-windows-amd64.exe --config.file=loki-local-config.yml
 ./loki-linux-amd64 -config.file=loki-local-config.yaml
+nohup loki-linux-amd64/loki-linux-amd64 -config.file=loki-linux-amd64/loki-local-config.yaml > /dev/null 2>&1 &
 ````
 
 ## Jaeger
@@ -183,7 +213,10 @@ tar -xvzf jaeger-1.65.0-linux-amd64.tar.gz
 ````
 
 Start jaeger by running the command below    
-`.\jaeger-all-in-one.exe`
+```shell
+.\jaeger-all-in-one.exe
+nohup jaeger-1.65.0-linux-amd64/jaeger-all-in-one > /dev/null 2>&1 &
+```
 
 ## Jmeter
 
