@@ -7,10 +7,7 @@ pipeline {
         AWS_REGION = 'us-east-1'
         ECR_REPO_NAME = 'weather/predictor'
         IMAGE_TAG = "backend-0.0.1-SNAPSHOT"
-        EC2_IP = '54.145.121.91'
-        EC2_USER = 'ubuntu'
         AWS_ACCOUNT_ID = '633705209869'
-        REDIS_HOST = '172.31.83.231'
         ECR_NAMESPACE = 'public.ecr.aws/s1u2f4x4'
         ECR_URL = "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com"
     }

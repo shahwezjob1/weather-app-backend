@@ -2,7 +2,6 @@ package com.weather.backend.service;
 
 import com.weather.backend.config.AppProps;
 import com.weather.backend.domain.Weather;
-import com.weather.backend.domain.WeatherAppMessage;
 import com.weather.backend.domain.WeatherAppResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -10,22 +9,20 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
 @Service
+@Profile("minimal")
 @RequiredArgsConstructor
 @Slf4j
-@Profile("!minimal")
-public class OpenWeatherService implements WeatherService {
+public class OpenWeatherServiceMinimal implements WeatherService {
     private final CacheService cacheService;
     private final WeatherApiService weatherApiService;
-    private final MessageService messageService;
     private final AppProps appProps;
     private final AdviceEvaluatorService adviceEvaluatorService;
 
     @Override
     public WeatherAppResponse getWeather(String city) {
-        log.debug("OpenWeatherService::getWeather::" + city);
+        log.debug("OpenWeatherServiceMinimal::getWeather::" + city);
         WeatherAppResponse cachedResponse = cacheService.getFromCache(city);
         if (cachedResponse != null) {
-            messageService.sendMessage(new WeatherAppMessage(city));
             return cachedResponse;
         }
         WeatherAppResponse appResponse = weatherApiService.getWeather(city);
@@ -34,7 +31,6 @@ public class OpenWeatherService implements WeatherService {
             weather.setAdvice(adviceEvaluatorService.getAdvice(weather));
         }
         cacheService.setInCache(city, appResponse);
-        messageService.sendMessage(new WeatherAppMessage(city));
         return appResponse;
     }
 }
