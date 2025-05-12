@@ -1,3 +1,7 @@
+# Problem Statement
+
+[Problem Statement](./Problem%20Statement.md)
+
 # Setup
 
 ## Kubernates
@@ -312,3 +316,7 @@ SMEMBERS RULES
 6. Application Secrets provided securely via Vault and vault credentials provided securely via environment variable
 7. Test Driven Development done by creating test cases
 8. Behaviour Driven Development done by creating
+
+# Diagram
+
+![Diagram](./diagram.svg)
